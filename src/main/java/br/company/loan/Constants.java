@@ -27,7 +27,7 @@ public interface Constants {
 
             interface LOAN {
                 String NAME = "loans";
-                String PATH = PERSON.PATH + PATH_SEPARATOR + PERSON.PATH_SLUG + PATH_SEPARATOR + NAME;
+                String PATH = PERSON.PATH + PERSON.PATH_SLUG + PATH_SEPARATOR + NAME;
             }
         }
     }

@@ -23,12 +23,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity(name = Constants.RDS.TABLE.LOAN.NAME)
 @Table(schema = Constants.RDS.SCHEMA)
-@Builder
+@Builder(builderClassName = "LoanBuilder")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -51,13 +52,20 @@ public class Loan {
     @Size(min = 5, max = 50)
     private String paymentStatus;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
+
     @Column(name = "created_at", nullable = false)
     @CreatedDate
     private LocalDate createdAt;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
+    public Loan(BigDecimal amount, Integer invoiceQuantity, Person person, String status) {
+        this.amount = amount;
+        this.invoiceQuantity = invoiceQuantity;
+        this.person = person;
+        this.paymentStatus = status;
+    }
 
     @Override
     public final boolean equals(Object o) {
@@ -73,5 +81,29 @@ public class Loan {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public void validate() {
+        if(invoiceQuantity > 24) {
+            throw new IllegalArgumentException("More than 24 invoices quantities");
+        }
+
+        if (amount.compareTo(person.getMaxAmountLoan()) > 0) {
+            throw new IllegalArgumentException("Amount exceeds the maximum allowed loan amount for the person");
+        }
+
+        BigDecimal mediaAmount = amount.divide(BigDecimal.valueOf(invoiceQuantity), RoundingMode.HALF_EVEN);
+
+        if(person.getMinAmountMonthly().compareTo(mediaAmount) > 0){
+            throw new IllegalArgumentException("Min amount");
+        }
+    }
+
+    public static class LoanBuilder {
+        public Loan build() {
+            Loan loan = new Loan(amount, invoiceQuantity, person, "WAITING_PAYMENT");
+            loan.validate();
+            return loan;
+        }
     }
 }
