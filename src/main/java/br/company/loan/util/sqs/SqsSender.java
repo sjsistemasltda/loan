@@ -25,6 +25,7 @@ public class SqsSender {
         SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
                 .queueUrl(queueName)
                 .messageBody(message)
+                .delaySeconds(5)
                 .build();
 
         sqsClient.sendMessage(sendMessageRequest);

@@ -27,7 +27,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({InvalidIdentifierException.class, PersonNotFoundException.class, ProcessPaymentException.class})
+    @ExceptionHandler({
+            InvalidIdentifierException.class,
+            PersonNotFoundException.class,
+            ProcessPaymentException.class,
+            MaxAmountLoanException.class,
+            MaxInvoiceQuantityException.class,
+            MinAmountLoanException.class
+    })
     public ResponseEntity<?> handleInvalidExceptionBadRequest(Exception ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

@@ -1,5 +1,6 @@
 package br.company.loan.service;
 
+import br.company.loan.controller.exception.MaxAmountLoanException;
 import br.company.loan.controller.exception.PersonNotFoundException;
 import br.company.loan.controller.exception.ProcessPaymentException;
 import br.company.loan.entity.Loan;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -28,11 +30,15 @@ public class LoanServiceImpl implements LoanService {
     @Value("${payment.service.sqs}")
     private String queueNameProcessPayment;
 
+    private final static String PAYMENT_STATUS_WAITING = "WAITING_PAYMENT";
+
     @Override
     @Transactional
     public void make(Long personId, LoanCreateRequestDTO loan) {
         Optional<Person> personOptional = personRepository.findById(personId);
         Person person = personOptional.orElseThrow(() -> new PersonNotFoundException("Person not found"));
+        validateMaxLoanWithoutPayment(personId, loan.getAmount(), person.getMaxAmountLoan());
+
         Loan entity = Loan.builder()
                 .amount(loan.getAmount())
                 .invoiceQuantity(loan.getInvoiceQuantity())
@@ -40,6 +46,7 @@ public class LoanServiceImpl implements LoanService {
                 .build();
 
         Loan saved = loanRepository.save(entity);
+
         try {
             paymentClient.pay(saved.getId());
         } catch (Exception e) {
@@ -48,6 +55,13 @@ public class LoanServiceImpl implements LoanService {
                     .id(saved.getId())
                     .build()
             );
+        }
+    }
+
+    private void validateMaxLoanWithoutPayment(Long personId, BigDecimal amount, BigDecimal maxAmountPerson) {
+        BigDecimal sumLoans = loanRepository.sumAmountByPersonIdAndPaymentStatus(personId, PAYMENT_STATUS_WAITING);
+        if(sumLoans.add(amount).compareTo(maxAmountPerson) > 0) {
+            throw new MaxAmountLoanException("Reached the maximum loan limit allowed");
         }
     }
 

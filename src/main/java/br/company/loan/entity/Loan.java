@@ -1,6 +1,9 @@
 package br.company.loan.entity;
 
 import br.company.loan.Constants;
+import br.company.loan.controller.exception.MaxAmountLoanException;
+import br.company.loan.controller.exception.MaxInvoiceQuantityException;
+import br.company.loan.controller.exception.MinAmountLoanException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -85,17 +88,17 @@ public class Loan {
 
     public void validate() {
         if(invoiceQuantity > 24) {
-            throw new IllegalArgumentException("More than 24 invoices quantities");
+            throw new MaxInvoiceQuantityException("More than 24 invoices quantities");
         }
 
         if (amount.compareTo(person.getMaxAmountLoan()) > 0) {
-            throw new IllegalArgumentException("Amount exceeds the maximum allowed loan amount for the person");
+            throw new MaxAmountLoanException("Amount exceeds the maximum allowed loan amount for the person");
         }
 
         BigDecimal mediaAmount = amount.divide(BigDecimal.valueOf(invoiceQuantity), RoundingMode.HALF_EVEN);
 
         if(person.getMinAmountMonthly().compareTo(mediaAmount) > 0){
-            throw new IllegalArgumentException("Min amount");
+            throw new MinAmountLoanException("The minimum installment value divided by the quantity is: " + person.getMinAmountMonthly());
         }
     }
 
