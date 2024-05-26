@@ -1,4 +1,3 @@
-# Use the official maven/Java image to build the app
 FROM jelastic/maven:3.9.4-openjdk-22.ea-b17 AS build
 COPY src /home/app/src
 COPY pom.xml /home/app

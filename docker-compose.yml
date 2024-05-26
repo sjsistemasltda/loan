@@ -13,7 +13,7 @@ services:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: password
       DATABASE_SCHEMA: bank
-      PAYMENT_SERVICE_URL: http://localhost:8082
+      PAYMENT_SERVICE_URL: http://payment-api:8082
       PAYMENT_SERVICE_SQS: http://localstack:4566/000000000000/process-payment
       LOCALSTACK_URL: http://localstack:4566
       AWS_ACCESS_KEY: faker
