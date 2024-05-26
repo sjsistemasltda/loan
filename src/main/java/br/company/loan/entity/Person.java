@@ -1,6 +1,10 @@
 package br.company.loan.entity;
 
 import br.company.loan.Constants;
+import br.company.loan.enums.LoanAmount;
+import br.company.loan.enums.PersonType;
+import br.company.loan.service.factory.IdentifierValidType;
+import br.company.loan.service.factory.IdentifierValidTypeFactory;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +34,7 @@ import java.util.Set;
 
 @Entity(name = Constants.RDS.TABLE.PERSON.NAME)
 @Table(schema = Constants.RDS.SCHEMA)
-@Builder
+@Builder(builderClassName = "PersonBuilder")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -72,6 +76,22 @@ public class Person {
     @ToString.Exclude
     private Set<Loan> loans = new LinkedHashSet<>();
 
+    public Person(
+            String name,
+            String identifier,
+            String identifierType,
+            LocalDate birthDate,
+            BigDecimal minAmountMonthly,
+            BigDecimal maxAmountLoan
+    ) {
+        this.name = name;
+        this.identifier = identifier;
+        this.identifierType = identifierType;
+        this.birthDate = birthDate;
+        this.minAmountMonthly = minAmountMonthly;
+        this.maxAmountLoan = maxAmountLoan;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -86,5 +106,29 @@ public class Person {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public void validate() {
+        IdentifierValidTypeFactory identifierValidTypeFactory = new IdentifierValidTypeFactory();
+        IdentifierValidType identifierValidType = identifierValidTypeFactory.get(
+                PersonType.getByName(this.getIdentifierType())
+        );
+        identifierValidType.validate(this.getIdentifier());
+    }
+
+    public static class PersonBuilder {
+        public Person build() {
+            LoanAmount loanAmount = LoanAmount.getByName(identifierType);
+            Person person = new Person(
+                    name,
+                    identifier,
+                    identifierType,
+                    birthDate,
+                    loanAmount.getMinAmountMonthly(),
+                    loanAmount.getMaxAmountLoan()
+            );
+            person.validate();
+            return person;
+        }
     }
 }

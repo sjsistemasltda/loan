@@ -28,5 +28,18 @@ services:
     volumes:
       - ./src/main/resources/db/migration:/flyway/sql
 
+  localstack:
+    image: localstack/localstack:latest
+    container_name: bank_stack
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=sqs
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./scripts:/etc/localstack/init/ready.d/"
+
 volumes:
   postgres_data:

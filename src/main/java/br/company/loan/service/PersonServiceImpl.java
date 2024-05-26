@@ -29,28 +29,18 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public PersonResponseDTO create(PersonCreateRequestDTO person) {
         try {
-            LoanAmount loanAmount = LoanAmount.getByName(person.getIdentifierType());
-            IdentifierValidType identifierValidType = identifierValidTypeFactory.get(
-                    PersonType.getByName(person.getIdentifierType())
-            );
-            identifierValidType.validate(person.getIdentifier());
-
             Person entity = Person.builder()
                     .name(person.getName())
                     .identifier(person.getIdentifier())
                     .identifierType(person.getIdentifierType())
                     .birthDate(person.getBirthDate())
-                    .minAmountMonthly(loanAmount.getMinAmountMonthly())
-                    .maxAmountLoan(loanAmount.getMaxAmountLoan())
                     .build();
 
             Person entitySaved = personRepository.save(entity);
-
             return PersonResponseDTO.convert(entitySaved);
         } catch (DataIntegrityViolationException ex) {
             throw new PersonAlreadyExistsException("Person already exists");
         }
-
     }
 
     @Override
