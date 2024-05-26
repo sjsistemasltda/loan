@@ -27,7 +27,7 @@ public class PersonController {
     @PostMapping(value = Constants.CONTROLLER.PERSON.PATH)
     public ResponseEntity<?> create(@Valid @RequestBody PersonCreateRequestDTO person) {
         PersonResponseDTO response = personService.create(person);
-        return ResponseEntity.created(URI.create("person"))
+        return ResponseEntity.created(URI.create("persons"))
                 .body(response);
     }
 

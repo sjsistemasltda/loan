@@ -52,7 +52,7 @@ public class Loan {
     private Integer invoiceQuantity;
 
     @Column(name = "payment_status", nullable = false)
-    @Size(min = 5, max = 50)
+    @Size(min = 4, max = 50)
     private String paymentStatus;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
