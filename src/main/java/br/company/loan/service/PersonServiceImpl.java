@@ -7,7 +7,6 @@ import br.company.loan.entity.dto.request.PersonCreateRequestDTO;
 import br.company.loan.entity.dto.request.PersonUpdateRequestDTO;
 import br.company.loan.entity.dto.response.PersonResponseDTO;
 import br.company.loan.repository.PersonRepository;
-import br.company.loan.service.factory.IdentifierValidTypeFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +19,6 @@ import java.util.Optional;
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
-    private final IdentifierValidTypeFactory identifierValidTypeFactory;
 
     @Override
     @Transactional
@@ -35,7 +33,7 @@ public class PersonServiceImpl implements PersonService {
 
             Person entitySaved = personRepository.save(entity);
             return PersonResponseDTO.convert(entitySaved);
-        } catch (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException e) {
             throw new PersonAlreadyExistsException("Person already exists");
         }
     }

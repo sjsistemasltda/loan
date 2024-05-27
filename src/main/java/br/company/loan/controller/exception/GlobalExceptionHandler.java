@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -34,7 +35,8 @@ public class GlobalExceptionHandler {
             MaxAmountLoanException.class,
             MaxInvoiceQuantityException.class,
             MinAmountLoanException.class,
-            LoanMakeException.class
+            LoanMakeException.class,
+            DataIntegrityViolationException.class,
     })
     public ResponseEntity<?> handleInvalidExceptionBadRequest(Exception ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getDescription(false));
