@@ -6,6 +6,7 @@ Este projeto configura um sistema de empréstimos, onde é possível fazer o cad
 
 - **Loan API**: Aplicação em Java 21 e SpringBoot.
 - [**Arquitetura**](#arquitetura)
+- AspectLogger
 
 ## Pré-requisitos
 
