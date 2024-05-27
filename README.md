@@ -12,6 +12,7 @@ Este projeto configura um sistema de empréstimos, onde é possível fazer o cad
 - Docker
 - Docker Compose
 - [IAC](https://github.com/sjsistemasltda/bank_iac)
+- [Payment API](https://github.com/sjsistemasltda/payment)
 
 ## Como usar
 
@@ -30,6 +31,7 @@ Este projeto configura um sistema de empréstimos, onde é possível fazer o cad
 
 4. **Serviços em funcionamento**:
 - Loan API: http://localhost:8080
+- Actuator: http://localhost:8080/actuator/health
 
 ## cURLs de exemplo
 
@@ -69,5 +71,5 @@ curl --request DELETE \
   --url http://localhost:8080/v1/persons/1
 ```
 
-### Arquitetura
+## Arquitetura
 ![](assets/loan_api.png)
