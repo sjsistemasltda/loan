@@ -9,7 +9,6 @@ import br.company.loan.entity.dto.response.PersonResponseDTO;
 import br.company.loan.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,19 +22,20 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public PersonResponseDTO create(PersonCreateRequestDTO person) {
-        try {
-            Person entity = Person.builder()
-                    .name(person.getName())
-                    .identifier(person.getIdentifier())
-                    .identifierType(person.getIdentifierType())
-                    .birthDate(person.getBirthDate())
-                    .build();
-
-            Person entitySaved = personRepository.save(entity);
-            return PersonResponseDTO.convert(entitySaved);
-        } catch (DataIntegrityViolationException e) {
+        Optional<Person> existingPerson = personRepository.findByIdentifierAndIdentifierType(person.getIdentifier(), person.getIdentifierType());
+        if (existingPerson.isPresent()) {
             throw new PersonAlreadyExistsException("Person already exists");
         }
+
+        Person entity = Person.builder()
+                .name(person.getName())
+                .identifier(person.getIdentifier())
+                .identifierType(person.getIdentifierType())
+                .birthDate(person.getBirthDate())
+                .build();
+
+        Person entitySaved = personRepository.save(entity);
+        return PersonResponseDTO.convert(entitySaved);
     }
 
     @Override
