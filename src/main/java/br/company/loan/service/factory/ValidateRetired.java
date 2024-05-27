@@ -11,14 +11,14 @@ public class ValidateRetired implements IdentifierValidType {
     @Override
     public void validate(String identifier) {
         if(identifier == null || !RETIRED_PATTERN.matcher(identifier).matches()) {
-            throw new InvalidIdentifierException("Invalid University Student");
+            throw new InvalidIdentifierException("Invalid Retired");
         }
 
         char lastChar = identifier.charAt(identifier.length() - 1);
         String remainingChars = identifier.substring(0, identifier.length() - 1);
 
         if (remainingChars.contains(String.valueOf(lastChar))) {
-            throw new InvalidIdentifierException("Invalid University Student");
+            throw new InvalidIdentifierException("Invalid Retired");
         }
     }
 }

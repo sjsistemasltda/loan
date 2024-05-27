@@ -37,7 +37,7 @@ public class LoanServiceImpl implements LoanService {
     private final PlatformTransactionManager transactionManager;
 
     @Value("${payment.service.sqs}")
-    private String queueNameProcessPayment;
+    String queueNameProcessPayment;
 
     private final static String PAYMENT_STATUS_WAITING = "WAITING_PAYMENT";
 
@@ -108,7 +108,6 @@ public class LoanServiceImpl implements LoanService {
         try {
             awsService.send(queueNameProcessPayment, loan);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw new ProcessPaymentException("Process payment with error");
         }
     }
