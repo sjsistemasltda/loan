@@ -13,6 +13,7 @@ Este projeto configura um sistema de empréstimos, onde é possível fazer o cad
 - Docker Compose
 - [IAC](https://github.com/sjsistemasltda/bank_iac)
 - [Payment API](https://github.com/sjsistemasltda/payment)
+- Maven (Opcional para rodar os testes sem IDE)
 
 ## Como usar
 
@@ -32,6 +33,11 @@ Este projeto configura um sistema de empréstimos, onde é possível fazer o cad
 4. **Serviços em funcionamento**:
 - Loan API: http://localhost:8080
 - Actuator: http://localhost:8080/actuator/health
+
+## Execução de testes unitários
+   ```sh
+   mvn test -Dspring.profiles.active=local
+   ```
 
 ## cURLs de exemplo
 
