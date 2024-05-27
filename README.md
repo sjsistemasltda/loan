@@ -1,0 +1,73 @@
+# Projeto de empréstimos
+
+Este projeto configura um sistema de empréstimos, onde é possível fazer o cadastro de uma pessoa e também atribuí-a a um empréstimo.
+
+## Conteúdo
+
+- **Loan API**: Aplicação em Java 22 e SpringBoot.
+- [**Arquitetura**](#arquitetura)
+
+## Pré-requisitos
+
+- Docker
+- Docker Compose
+- [IAC](https://github.com/sjsistemasltda/bank_iac)
+
+## Como usar
+
+1. **Clone o repositório**:
+   ```sh
+   git clone https://github.com/sjsistemasltda/loan
+   cd loan
+
+2. **Faça o build do docker**:
+    ```sh
+    docker-compose build;
+
+3. **Inicie o container**:
+    ```sh
+    docker-compose up -d;
+
+4. **Serviços em funcionamento**:
+- Loan API: http://localhost:8080
+
+## cURLs de exemplo
+
+**Criação de pessoa**:
+```sh
+curl --request POST \
+  --url http://localhost:8080/v1/persons \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "name": "Jean Sumara",
+  "identifier": "91445956039",
+  "identifierType": "PF",
+  "birthDate": "24/07/1998"
+}'
+```
+
+**Atualização de pessoa pelo id**:
+```sh
+curl --request PUT \
+  --url http://localhost:8080/v1/persons/1 \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "name": "Jean Sumara +1",
+  "birthDate": "24/07/1998"
+}'
+```
+
+**Buscar pessoa pelo id**:
+```sh
+curl --request GET \
+  --url http://localhost:8080/v1/persons/1
+```
+
+**Deletar pessoa pelo id**:
+```sh
+curl --request DELETE \
+  --url http://localhost:8080/v1/persons/1
+```
+
+### Arquitetura
+![](assets/loan_api.png)
