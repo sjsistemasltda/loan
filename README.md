@@ -51,7 +51,7 @@ curl --request POST \
 **Atualização de pessoa pelo id**:
 ```sh
 curl --request PUT \
-  --url http://localhost:8080/v1/persons/1 \
+  --url http://localhost:8080/v1/persons/{personId} \
   --header 'Content-Type: application/json' \
   --data '{
   "name": "Jean Sumara +1",
@@ -62,14 +62,24 @@ curl --request PUT \
 **Buscar pessoa pelo id**:
 ```sh
 curl --request GET \
-  --url http://localhost:8080/v1/persons/1
+  --url http://localhost:8080/v1/persons/{personId}
 ```
 
 **Deletar pessoa pelo id**:
 ```sh
 curl --request DELETE \
-  --url http://localhost:8080/v1/persons/1
+  --url http://localhost:8080/v1/persons/{personId}
 ```
 
+**Criar um empréstimo**:
+```sh
+curl --request POST \
+  --url http://localhost:8080/v1/persons/{personId}/loans \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "amount": 1000,
+  "invoiceQuantity": 1
+}'
+```
 ## Arquitetura
 ![](assets/loan_api.png)
